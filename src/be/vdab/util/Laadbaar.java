@@ -8,8 +8,14 @@ package be.vdab.util;
 
 /**
  *
- * @author marjolein
+ * @author marjolein.vancelst
+ *
+ * Deze interface zit in de package be.vdab.util De interface definieert een
+ * getter en een setter voor laadvolume.
  */
-public class Laadbaar {
-    
+public interface Laadbaar {
+
+    public void setLaadvolume(Volume laadvolume); 
+
+    public Volume getLaadvolume();
 }

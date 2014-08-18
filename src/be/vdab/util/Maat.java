@@ -6,10 +6,26 @@
 
 package be.vdab.util;
 
+import java.io.Serializable;
+
 /**
  *
- * @author marjolein
+ * @author marjolein.vancelst
+ *
+ * Creëer een enum Maat met waardes: centimeter, decimeter en meter.
  */
-public class Maat {
-    
+public enum Maat implements Serializable/*, Comparable<Maat>*/ {
+
+    //1 meter = 100 centimeter, 1 decimeter = 10 centimeter
+    centimeter(1), decimeter(10), meter(100);
+
+    private final int samenZetten;
+
+    private Maat(int samenZetten) {
+        this.samenZetten = samenZetten;
+    }
+
+    public long getSamenZetten() {
+        return (long) samenZetten * samenZetten * samenZetten;
+    }
 }
