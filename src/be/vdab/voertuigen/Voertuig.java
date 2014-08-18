@@ -254,10 +254,12 @@ public abstract class Voertuig implements Comparable<Voertuig>, Serializable {
         return new MerkComparator() {
             @Override
             public int compare(Voertuig v1, Voertuig v2) {
-                if (v1 != null && v2 != null) {
-                    return v1.getMerk().compareTo(v2.getMerk());
+                if (v1.compareTo(v2) == 0)
+                    return 0;
+                if (v1.getMerk().compareTo(v2.getMerk())<0) {
+                    return -1;
                 } else {
-                    throw new NullPointerException("één van de voertuigen heeft geen waarde");
+                    return 1;
                 }
             }
         };
