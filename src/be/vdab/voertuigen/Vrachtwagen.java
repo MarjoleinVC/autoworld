@@ -11,7 +11,6 @@ import be.vdab.util.Volume;
 import be.vdab.util.mens.Mens;
 import be.vdab.util.mens.MensException;
 import be.vdab.util.mens.Rijbewijs;
-import be.vdab.voertuigen.div.Nummerplaat;
 import java.io.Serializable;
 
 /**

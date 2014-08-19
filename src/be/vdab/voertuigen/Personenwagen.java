@@ -23,18 +23,18 @@ public class Personenwagen extends Voertuig implements Comparable<Voertuig>, Ser
 
     public Personenwagen(String merk, Datum datumEersteIngebruikname, int aankoopprijs, int zitplaatsen, Color kleur, Mens bestuurder) throws MensException {
         super(merk, datumEersteIngebruikname, aankoopprijs, zitplaatsen, bestuurder);
-        if (zitplaatsen > MAX_ZITPLAATSEN) {
+        /*if (zitplaatsen > MAX_ZITPLAATSEN) {
             throw new IllegalArgumentException("Het maximum toegelaten aantal zitplaatsen is: " + MAX_ZITPLAATSEN);
-        }
-        kleur = this.kleur;
+        }*/
+        this.kleur = kleur;
     }
 
     public Personenwagen(String merk, Datum datumEersteIngebruikname, int aankoopprijs, int zitplaatsen, Color kleur, Mens bestuurder, Mens... ingezetenen) throws MensException {
         super(merk, datumEersteIngebruikname, aankoopprijs, zitplaatsen, bestuurder, ingezetenen);
-        if (zitplaatsen > MAX_ZITPLAATSEN) {
+        /*if (zitplaatsen > MAX_ZITPLAATSEN) {
             throw new IllegalArgumentException("Het maximum toegelaten aantal zitplaatsen is: " + MAX_ZITPLAATSEN);
-        }
-        kleur = this.kleur;
+        }*/
+        this.kleur = kleur;
     }
 
     @Override

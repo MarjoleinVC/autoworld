@@ -19,7 +19,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -36,12 +35,12 @@ public class Programma {
 
         //Declare "Voertuig"
         SortedSet<Voertuig> voertuigen = new TreeSet<>();
-        Personenwagen personenwagen1;
-        Personenwagen personenwagen2;
-        Pickup pickup1;
-        Pickup pickup2;
-        Vrachtwagen vrachtwagen1;
-        Vrachtwagen vrachtwagen2;
+        Personenwagen pw1;
+        Personenwagen pw2;
+        Pickup pu1;
+        Pickup pu2;
+        Vrachtwagen vw1;
+        Vrachtwagen vw2;
 
         //Declare "Mens"
         Mens BESTUURDER_A = new Mens("Andree", A);
@@ -78,20 +77,20 @@ public class Programma {
         int AANTAL_ASSEN_3 = 3;
 
         //Specifiëren voertuigen
-        personenwagen1 = new Personenwagen("Volvo", new Datum(1, 5, 2004), 20000, 5, Color.blue, BESTUURDER_BE, INGEZETENE_B, INGEZETENE_G);
-        personenwagen2 = new Personenwagen("Ford", new Datum(1, 5, 2004), 20000, 5, Color.GRAY, BESTUURDER_AB, INGEZETENE_C);
-        pickup1 = new Pickup("Opel", new Datum(1, 5, 2004), 20000, 5, Color.PINK, VOLUME10, BESTUURDER_B, INGEZETENE_D);
-        pickup2 = new Pickup("BMW", new Datum(1, 5, 2004), 20000, 5, Color.WHITE, VOLUME10, BESTUURDER_BC, INGEZETENE_E);
-        vrachtwagen1 = new Vrachtwagen("Volvo", new Datum(1, 5, 2004), 20000, 3, VOLUME12, MAXIAAM_TOEGELATEN_MASSA_1, AANTAL_ASSEN_2, BESTUURDER_BBE, INGEZETENE_A, INGEZETENE_F, INGEZETENE_B);
-        vrachtwagen2 = new Vrachtwagen("Mercedes", new Datum(1, 5, 2004), 20000, 3, VOLUME12, MAXIAAM_TOEGELATEN_MASSA_2, AANTAL_ASSEN_3, BESTUURDER_BBECCE, INGEZETENE_F, INGEZETENE_I);
+        pw1 = new Personenwagen("Volvo", new Datum(1, 5, 2004), 20000, 5, Color.blue, BESTUURDER_BE, INGEZETENE_B, INGEZETENE_G);
+        pw2 = new Personenwagen("Ford", new Datum(1, 5, 2004), 12000, 5, Color.GRAY, BESTUURDER_AB, INGEZETENE_C);
+        pu1 = new Pickup("Opel", new Datum(1, 5, 2004), 21000, 5, Color.PINK, VOLUME10, BESTUURDER_B, INGEZETENE_D);
+        pu2 = new Pickup("BMW", new Datum(1, 5, 2004), 25000, 5, Color.WHITE, VOLUME10, BESTUURDER_BC, INGEZETENE_E);
+        vw1 = new Vrachtwagen("Volvo", new Datum(1, 5, 2004), 45500, 3, VOLUME12, MAXIAAM_TOEGELATEN_MASSA_1, AANTAL_ASSEN_2, BESTUURDER_BBE, INGEZETENE_A, INGEZETENE_F, INGEZETENE_B);
+        vw2 = new Vrachtwagen("Mercedes", new Datum(1, 5, 2004), 40000, 3, VOLUME12, MAXIAAM_TOEGELATEN_MASSA_2, AANTAL_ASSEN_3, BESTUURDER_BBECCE, INGEZETENE_F, INGEZETENE_I);
 
         //Vullen lijst
-        voertuigen.add(personenwagen1);
-        voertuigen.add(personenwagen2);
-        voertuigen.add(pickup1);
-        voertuigen.add(pickup2);
-        voertuigen.add(vrachtwagen1);
-        voertuigen.add(vrachtwagen2);
+        voertuigen.add(pw1);
+        voertuigen.add(pw2);
+        voertuigen.add(pu1);
+        voertuigen.add(pu2);
+        voertuigen.add(vw1);
+        voertuigen.add(vw2);
 
         //Sorteren op nummerplaat
         System.out.println();
@@ -102,18 +101,49 @@ public class Programma {
         }
 
         //Sorteren op aankoopprijs
-        SortedSet<Voertuig> voertuigenAankoopprijs = new TreeSet<>(Voertuig.getAankoopprijsComparator());
+        SortedSet<Voertuig> voertuigenAankoopprijs = new TreeSet<>(new Voertuig.AankoopprijsComparator() {
+            @Override
+            public int compare(Voertuig v1, Voertuig v2) {
+                if (v1 == null || v2 == null) {
+                    throw new NullPointerException();
+                } else {
+                    if (v1.compareTo(v2) == 0) {
+                        return 0;
+                    }
+                    if (v1.getAankoopprijs()-(v2.getAankoopprijs()) < 0) {
+                        return -1;
+                    } else {
+                        return 1;
+                    }
+                }
+            }
+        });
         voertuigenAankoopprijs.addAll(voertuigen);
         System.out.println();
         System.out.print("*** SortedSet aankoopprijs ***");
         System.out.println();
-        for (Iterator<Voertuig> it = voertuigenAankoopprijs.iterator(); it.hasNext();) {
-            Voertuig v = it.next();
+        for (Voertuig v : voertuigenAankoopprijs) {
             System.out.println(v.toString());
         }
 
         //Sorteren op merk
-        SortedSet<Voertuig> voertuigenMerk = new TreeSet<>(Voertuig.getAankoopprijsComparator());
+        SortedSet<Voertuig> voertuigenMerk = new TreeSet<>(new Voertuig.MerkComparator() {
+            @Override
+           public int compare(Voertuig v1, Voertuig v2) {
+                if (v1 == null || v2 == null) {
+                    throw new NullPointerException();
+                } else {
+                    if (v1.compareTo(v2) == 0) {
+                        return 0;
+                    }
+                    if (v1.getMerk().compareTo(v2.getMerk()) < 0) {
+                        return -1;
+                    } else {
+                        return 1;
+                    }
+                }
+            }
+        });
         voertuigenMerk.addAll(voertuigen);
         System.out.println();
         System.out.print("*** SortedSet merk ***");

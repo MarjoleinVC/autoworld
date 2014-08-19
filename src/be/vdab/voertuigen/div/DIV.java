@@ -6,10 +6,6 @@
 
 package be.vdab.voertuigen.div;
 
-
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  *
  * @author marjolein.vancelst

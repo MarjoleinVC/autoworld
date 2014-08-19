@@ -13,6 +13,7 @@ import be.vdab.voertuigen.div.DIV;
 import be.vdab.voertuigen.div.Nummerplaat;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Set;
@@ -62,27 +63,16 @@ public abstract class Voertuig implements Comparable<Voertuig>, Serializable {
     private final TreeSet<Mens> ingezetenen = new TreeSet<>();
 
     public Voertuig(String merk, Datum datumEersteIngebruikname, int aankoopprijs, int zitplaatsen, Mens bestuurder, Mens... inzittende) throws MensException {
-        validateZitplaatsen(zitplaatsen);
-        validateInzittenden(zitplaatsen, inzittende);
-        validateNodigRijbewijs(bestuurder);
-        toevoegenInzittenden(bestuurder, inzittende);
+        ingezetenen.add(bestuurder);
+        ingezetenen.addAll(Arrays.asList(inzittende));
         this.merk = merk;
         this.datumEersteIngebruikname = datumEersteIngebruikname;
         this.aankoopprijs = aankoopprijs;
         this.zitplaatsen = zitplaatsen;
         this.bestuurder = bestuurder;
-        /*ingezetenen.add(bestuurder);
-        ingezetenen.addAll(Arrays.asList(inzittende));*/
-    }
-
-    private void toevoegenInzittenden(Mens bestuurder, Mens[] inzittende) {
-        ingezetenen.add(bestuurder);
-        for (Mens inzittende1 : inzittende) {
-            if (ingezetenen.contains(inzittende1)) {
-            } else {
-                ingezetenen.add(inzittende1);
-            }
-        }
+        validateZitplaatsen(zitplaatsen);
+        validateInzittenden(zitplaatsen, ingezetenen);
+        validateNodigRijbewijs(bestuurder);
     }
 
     protected abstract Rijbewijs[] getToegestaneRijbewijzen();
@@ -127,9 +117,9 @@ public abstract class Voertuig implements Comparable<Voertuig>, Serializable {
         }
     }
 
-    private void validateInzittenden(int zitplaatsen, Mens[] ingezetenen) throws MensException {
-        if (ingezetenen.length > zitplaatsen ) {//-1 omdat er nog plaats moet zijn voor de bestuurder
-            throw new MensException("Het aantal beschikbare zitplaatsen voor de inzittenden is: " + zitplaatsen );
+    private void validateInzittenden(int zitplaatsen, Collection<Mens> inzittenden) throws MensException {
+        if ((inzittenden.size()) > zitplaatsen) {//+1 omdat er nog plaats moet zijn voor de bestuurder
+            throw new MensException("Het aantal beschikbare zitplaatsen voor de inzittenden met bestuurder is " + zitplaatsen);
         }
     }
 
@@ -145,7 +135,8 @@ public abstract class Voertuig implements Comparable<Voertuig>, Serializable {
 
     public void setBestuurder(Mens nieuweBestuurder) throws MensException {
         Mens vorigeBestuurder = this.bestuurder;
-        if ((zitplaatsen > ingezetenen.size()) || isIngezetene(nieuweBestuurder)) {
+        if ((isIngezetene(nieuweBestuurder)) && (zitplaatsen == ingezetenen.size())) {
+        } else if (zitplaatsen > ingezetenen.size()) {
             if (nieuweBestuurder != null) {
                 if (validateNodigRijbewijs(nieuweBestuurder)) {
                     bestuurder = nieuweBestuurder;
@@ -164,12 +155,12 @@ public abstract class Voertuig implements Comparable<Voertuig>, Serializable {
 
     public void addIngezetene(Mens nieuweInzittende) throws MensException {
         if (nieuweInzittende != null) {
-            if (zitplaatsen > ingezetenen.size()) {
-                if (!isIngezetene(nieuweInzittende)) {
+            if (!isIngezetene(nieuweInzittende)) {
+                if (zitplaatsen > ingezetenen.size()) {
                     ingezetenen.add(nieuweInzittende);
-                } 
-            } else {
-                throw new MensException("Alle zitplaatsen in het voertuig zijn reeds bezet.");
+                } else {
+                    throw new MensException("Alle zitplaatsen in het voertuig zijn reeds bezet.");
+                }
             }
         } else {
             throw new NullPointerException("Geef een inzittende op.");
@@ -254,17 +245,15 @@ public abstract class Voertuig implements Comparable<Voertuig>, Serializable {
         return new MerkComparator() {
             @Override
             public int compare(Voertuig v1, Voertuig v2) {
-                if (v1.compareTo(v2) == 0)
-                    return 0;
-                if (v1.getMerk().compareTo(v2.getMerk())<0) {
-                    return -1;
+                if (v1 == null || v2 == null) {
+                    throw new NullPointerException();
                 } else {
-                    return 1;
+                        return v1.getMerk().compareTo(v2.getMerk());
+                    }
                 }
-            }
-        };
-
-    }
+            };
+        }
+  
 
     public interface AankoopprijsComparator extends Comparator<Voertuig>, Serializable {
     }
@@ -273,10 +262,17 @@ public abstract class Voertuig implements Comparable<Voertuig>, Serializable {
         return new AankoopprijsComparator() {
             @Override
             public int compare(Voertuig v1, Voertuig v2) {
-                if (v1 != null && v2 != null) {
-                    return v1.getAankoopprijs() - (v2.getAankoopprijs());
+                if (v1 == null || v2 == null) {
+                    throw new NullPointerException();
                 } else {
-                    throw new NullPointerException("één van de voertuigen heeft geen waarde");
+                    if (v1.compareTo(v2) == 0) {
+                        return 0;
+                    }
+                    if (v1.getAankoopprijs() - (v2.getAankoopprijs()) < 0) {
+                        return -1;
+                    } else {
+                        return 1;
+                    }
                 }
             }
         };

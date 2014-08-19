@@ -66,7 +66,7 @@ public class Volume implements Comparable<Volume>, Serializable {
 
     @Override
     public boolean equals(Object v) {
-        if (v != null) {
+        if (v != null && (v instanceof Volume)) {
             final Volume andere = (Volume) v;
             return (this.hoogte == andere.hoogte) && (this.breedte == andere.breedte) && (this.diepte == andere.diepte) && (this.maat == andere.maat);
         } else {
